@@ -1,30 +1,55 @@
-﻿namespace WordFrequencyCounter
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace WordFrequencyCounter
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            string sentence = "The quick brown fox jump over the lazy dog.";
+            Console.WriteLine("Word Frequency Counter.\n");
 
-            string[] splitedWords = sentence.Split(' ', 9);
-
-            foreach (string word in splitedWords)
+            string choice;
+            do
             {
-                Console.WriteLine(word);
-            }
+                Console.Write("Enter the text: ");
+                string text = Console.ReadLine();
 
-            // CountWordFrequency(sentence);
+                Dictionary<string, int> wordFrequency = CountWordFrequency(text);
+
+                Console.WriteLine("Word Frequencies:");
+                foreach (var pair in wordFrequency)
+                {
+                    Console.WriteLine($"{pair.Key}: {pair.Value}");
+                }
+
+                Console.Write("\nDo you want to analyze more text? (y/n): ");
+                choice = Console.ReadLine();
+            } while (choice.ToLower() == "y");
+
+            Console.WriteLine("Goodbye!");
         }
 
-        static void CountWordFrequency(string sentence)
+        static Dictionary<string, int> CountWordFrequency(string text)
         {
-            char[] punctuation = { '.', '-', '!', ':', ';', '&', '/', '\\', '|', '`', '\'', '?', ' ' };
-            string[] words = sentence.Split(punctuation);
+            string[] words = text.Split(new[] { ' ', '.', ',', '!', '?', ':', ';', '"' }, StringSplitOptions.RemoveEmptyEntries);
+
+            Dictionary<string, int> frequency = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
             foreach (string word in words)
             {
-                Console.WriteLine(word.ToLower());
+                if (frequency.ContainsKey(word))
+                {
+                    frequency[word]++;
+                }
+                else
+                {
+                    frequency[word] = 1;
+                }
             }
+
+            return frequency;
         }
     }
 }
